@@ -2,7 +2,7 @@
   "name": "metrics-dashboard",
   "version": "1.0.0",
   "description": "A dashboard for displaying various metrics.",
-  "main": "index.js",
+  "main": "src/index.tsx",
   "scripts": {
     "build": "react-scripts build",
     "start": "react-scripts start"
