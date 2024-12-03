@@ -21,7 +21,14 @@ const metrics = {
   trialCost: { name: 'Trial Cost', color: '#f59e0b', icon: Target, format: (value: number) => `$${value.toFixed(2)}` }
 };
 
-const SparkLine = ({ data, dataKey, color, height = 30 }) => (
+interface SparkLineProps {
+  data: Array<{ [key: string]: number }>;
+  dataKey: string;
+  color: string;
+  height?: number;
+}
+
+const SparkLine = ({ data, dataKey, color, height = 30 }: SparkLineProps) => (
   <ResponsiveContainer width="100%" height={height}>
     <LineChart data={data}>
       <Line type="monotone" dataKey={dataKey} stroke={color} strokeWidth={1} dot={false} />
