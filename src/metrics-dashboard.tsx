@@ -22,7 +22,7 @@ const metrics = {
 };
 
 interface SparkLineProps {
-  data: Array<{ [key: string]: number }>;
+  data: DataItem[];
   dataKey: string;
   color: string;
   height?: number;
@@ -37,11 +37,12 @@ const SparkLine = ({ data, dataKey, color, height = 30 }: SparkLineProps) => (
 );
 
 interface DataItem {
-  [key: string]: number;
+  date: string;
+  [key: string]: string | number;
 }
 
 const getAverageValue = (data: DataItem[], key: string): number => {
-  return data.length > 0 ? data.reduce((sum, item) => sum + item[key], 0) / data.length : 0;
+  return data.length > 0 ? data.reduce((sum, item) => sum + (typeof item[key] === 'number' ? item[key] as number : 0), 0) / data.length : 0;
 };
 
 export default function MetricsDashboard() {
