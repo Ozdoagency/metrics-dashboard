@@ -14,11 +14,11 @@ const rawData = [
 ];
 
 const metrics = {
-  leads: { name: 'Tech Leads', color: '#2563eb', icon: Users, format: (value) => value },
-  leadCost: { name: 'Lead Cost', color: '#16a34a', icon: DollarSign, format: (value) => `$${value.toFixed(2)}` },
-  cr: { name: 'CR %', color: '#dc2626', icon: Percent, format: (value) => `${value}%` },
-  actual: { name: 'Budget', color: '#9333ea', icon: DollarSign, format: (value) => `$${value.toFixed(2)}` },
-  trialCost: { name: 'Trial Cost', color: '#f59e0b', icon: Target, format: (value) => `$${value.toFixed(2)}` }
+  leads: { name: 'Tech Leads', color: '#2563eb', icon: Users, format: (value: number) => value },
+  leadCost: { name: 'Lead Cost', color: '#16a34a', icon: DollarSign, format: (value: number) => `$${value.toFixed(2)}` },
+  cr: { name: 'CR %', color: '#dc2626', icon: Percent, format: (value: number) => `${value}%` },
+  actual: { name: 'Budget', color: '#9333ea', icon: DollarSign, format: (value: number) => `$${value.toFixed(2)}` },
+  trialCost: { name: 'Trial Cost', color: '#f59e0b', icon: Target, format: (value: number) => `$${value.toFixed(2)}` }
 };
 
 const SparkLine = ({ data, dataKey, color, height = 30 }) => (
