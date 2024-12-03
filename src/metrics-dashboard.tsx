@@ -70,7 +70,14 @@ const SparkLine = ({ data, dataKey, color, height = 30 }: SparkLineProps) => (
   </ResponsiveContainer>
 );
 
-const CustomTooltip = ({ active, payload, label, metrics }) => {
+interface CustomTooltipProps {
+  active?: boolean;
+  payload?: any[];
+  label?: string;
+  metrics: { [key: string]: { color: string; format: (value: any) => string } };
+}
+
+const CustomTooltip = ({ active, payload, label, metrics }: CustomTooltipProps) => {
   if (!active || !payload || !payload.length) return null;
   
   const data = payload[0];
