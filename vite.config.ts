@@ -10,6 +10,7 @@ export default defineConfig(({ mode }) => {
     base: '/',
     build: {
       sourcemap: true,
+      outDir: 'dist',
       rollupOptions: {
         output: {
           manualChunks: {
@@ -18,6 +19,9 @@ export default defineConfig(({ mode }) => {
           }
         }
       }
+    },
+    server: {
+      port: 3000
     },
     define: {
       __VITE_GOOGLE_PRIVATE_KEY__: JSON.stringify(env.VITE_GOOGLE_PRIVATE_KEY),
