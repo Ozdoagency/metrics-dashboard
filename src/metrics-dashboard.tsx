@@ -9,21 +9,21 @@ interface MetricData {
   leads: number;
   leadCost: number;
   cr: number;
-  quals: number; // это имя должно использоваться везде
+  quals: number;
+  qualCost: number; // Добавляем поле qualCost
+}
+
+interface SheetItem {
+  date: string;
+  leads: number;
+  leadCost: number;
+  cr: number;
+  actual: number;
+  quals: number;
   qualCost: number;
 }
 
 type Lang = 'en' | 'uk' | 'ru';
-type MetricKey = keyof Omit<MetricData, 'date'>;
-
-interface SparkLineProps {
-  data: MetricData[];
-  dataKey: keyof MetricData;
-  color: string;
-  height?: number;
-}
-
-type MetricValue = number;
 type MetricFormatter = (val: MetricValue) => string | number;
 
 interface MetricConfig {
@@ -33,9 +33,24 @@ interface MetricConfig {
   format: MetricFormatter;
 }
 
-type Metrics = {
-  [K in MetricKey]: MetricConfig;
-};
+type MetricKey = 'leads' | 'leadCost' | 'cr' | 'actual' | 'quals' | 'qualCost';
+type MetricValue = number;
+
+interface SparkLineProps {
+  data: MetricData[];
+  dataKey: string;
+  color: string;
+  height?: number;
+}
+
+interface Metrics {
+  leads: MetricConfig;
+  leadCost: MetricConfig;
+  cr: MetricConfig;
+  actual: MetricConfig;
+  quals: MetricConfig;
+  qualCost: MetricConfig;
+}
 
 const translations = {
     en: {
@@ -118,7 +133,7 @@ const MetricsDashboard: React.FC = () => {
         setLoading(true);
         const sheetData = await fetchSheetData();
         // Преобразуем данные в правильный формат
-        const formattedData = sheetData.map(item => ({
+        const formattedData = sheetData.map((item: SheetItem) => ({
           ...item,
           qualified: item.quals // если нужно сохранить qualified в интерфейсе
         }));
@@ -184,8 +199,12 @@ const MetricsDashboard: React.FC = () => {
     }
 };
 
+  // Обновляем функцию getAverageValue с правильной типизацией
   const getAverageValue = (data: MetricData[], key: MetricKey): number => {
-    return data.length > 0 ? data.reduce((sum, item) => sum + item[key], 0) / data.length : 0;
+    const validData = data.filter(item => typeof item[key] === 'number');
+    return validData.length > 0 
+      ? validData.reduce((sum, item) => sum + (item[key] as number), 0) / validData.length 
+      : 0;
   };
 
   const handleLangChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -298,8 +317,9 @@ const MetricsDashboard: React.FC = () => {
 
       <div className={`grid ${isMobile ? 'grid-cols-2' : 'grid-cols-6'} gap-4`}>
         {Object.entries(metrics).map(([key, { name, color, icon: Icon, format }]) => {
-          const latestValue = filteredData[filteredData.length - 1]?.[key as MetricKey] ?? 0;
-          const previousValue = filteredData[filteredData.length - 2]?.[key as MetricKey] ?? latestValue;
+          const keyAsMetric = key as MetricKey;
+          const latestValue = filteredData[filteredData.length - 1]?.[keyAsMetric] ?? 0;
+          const previousValue = filteredData[filteredData.length - 2]?.[keyAsMetric] ?? latestValue;
           const change = Number(((latestValue - previousValue) / previousValue * 100).toFixed(1));
           const isPositive = Number(change) > 0;
           
