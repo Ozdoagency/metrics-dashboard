@@ -8,7 +8,15 @@ export default defineConfig({
     fs: {
       strict: false
     },
-    port: 3000
+    port: 3000,
+    proxy: {
+      '/api': {
+        target: process.env.VITE_API_URL || 'http://localhost:3001',
+        changeOrigin: true,
+        secure: false,
+        rewrite: (path) => path.replace(/^\/api/, '')
+      }
+    }
   },
   build: {
     chunkSizeWarningLimit: 2000,
@@ -29,10 +37,11 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      '@': '/src'
+      '@': '/src',
+      'components': '/src/components'
     }
   },
   optimizeDeps: {
-    exclude: ['googleapis']
+    exclude: ['googleapis', 'axios']
   }
 });
