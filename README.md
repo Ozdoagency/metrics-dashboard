@@ -4,5 +4,5 @@
 
 ## Deploying to Netlify
 
-1. Установите зависимость `gh-pages`:
+1. Установите зависимости `gh-pages` и `react-app-rewired`:
    
