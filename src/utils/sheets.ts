@@ -1,39 +1,41 @@
-import { mockData } from './mock-data';
+import { google } from 'googleapis';
 
 export async function fetchSheetData() {
   try {
-    // В режиме разработки используем моковые данные
-    if (import.meta.env.DEV) {
-      return Promise.resolve(mockData);
-    }
-
-    const response = await fetch('/api/sheets', {
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      }
+    const privateKey = import.meta.env.VITE_GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n');
+    const auth = new google.auth.GoogleAuth({
+      credentials: {
+        private_key: privateKey,
+        client_email: import.meta.env.VITE_GOOGLE_SERVICE_ACCOUNT_EMAIL,
+      },
+      scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
     });
 
-    if (!response.ok) {
-      const text = await response.text();
-      console.error('Server response:', text);
-      throw new Error(`HTTP error! status: ${response.status}`);
+    const sheets = google.sheets({ version: 'v4', auth });
+    
+    const response = await sheets.spreadsheets.values.get({
+      spreadsheetId: import.meta.env.VITE_GOOGLE_SPREADSHEET_ID,
+      range: 'Sheet1!A:G', // Adjust range as needed
+    });
+
+    const rows = response.data.values;
+    if (!rows || rows.length === 0) {
+      throw new Error('No data found.');
     }
 
-    const data = await response.json();
-    if (!Array.isArray(data)) {
-      console.error('Unexpected data format:', data);
-      throw new Error('Invalid data format received from server');
-    }
+    // Skip header row and parse data
+    return rows.slice(1).map(row => ({
+      date: row[0],
+      leads: Number(row[1]),
+      leadCost: Number(row[2]),
+      cr: Number(row[3]),
+      actual: Number(row[4]),
+      quals: Number(row[5]),
+      qualCost: Number(row[6])
+    }));
 
-    return data;
   } catch (error) {
     console.error('Error fetching sheet data:', error);
-    // В случае ошибки в production возвраща��м моковые данные
-    if (import.meta.env.PROD) {
-      console.log('Falling back to mock data');
-      return mockData;
-    }
-    throw new Error('Failed to load data from server. Please try again later.');
+    throw error;
   }
 }
