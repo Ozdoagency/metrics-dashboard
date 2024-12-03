@@ -4,9 +4,9 @@ import path from 'path'
 
 export default defineConfig({
   plugins: [react()],
-  base: './',
+  base: './',  // Ensure relative paths
   build: {
-    outDir: 'dist',
+    outDir: 'dist',  // Оставляем как есть
     sourcemap: true,
     chunkSizeWarningLimit: 600, // Увеличиваем лимит предупреждения
     rollupOptions: {

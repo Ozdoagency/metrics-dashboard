@@ -1,6 +1,6 @@
 [build]
-  command = "NODE_OPTIONS=--openssl-legacy-provider npm run build"
-  publish = "build"
+  command = "npm run build"
+  publish = "dist"  // Соответствует директории сборки Vite
   base = "."
 
 [[redirects]]
