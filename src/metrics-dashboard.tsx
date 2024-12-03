@@ -3,8 +3,6 @@ import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, Re
 import { ArrowUpRight, ArrowDownRight, DollarSign, Users, Percent, Target, Globe } from 'lucide-react';
 import { Card, CardHeader, CardContent } from './components/ui/card'; // Убедитесь, что путь правильный
 
-type Lang = 'en' | 'uk' | 'ru';
-
 const rawData = [
   { date: '07.10', actual: 4240.85, leads: 12, leadCost: 353.40, cr: 100, trialCost: 353.40 },
   { date: '08.10', actual: 4188.93, leads: 11, leadCost: 380.81, cr: 100, trialCost: 380.81 },
@@ -15,49 +13,12 @@ const rawData = [
   { date: '13.10', actual: 4313.49, leads: 16, leadCost: 269.59, cr: 100, trialCost: 269.59 }
 ];
 
-const translations = {
-  en: {
-    title: 'Metrics Dashboard',
-    average: 'Average',
-    metrics: {
-      leads: 'Tech Leads',
-      leadCost: 'Lead Cost',
-      cr: 'CR %',
-      actual: 'Budget',
-      trialCost: 'Trial Cost'
-    },
-    min: 'min',
-    max: 'max',
-    madeIn: 'Made in'
-  },
-  uk: {
-    title: 'Панель метрик',
-    average: 'Середнє',
-    metrics: {
-      leads: 'Тех ліди',
-      leadCost: 'Вартість ліда',
-      cr: 'CR %',
-      actual: 'Бюджет',
-      trialCost: 'Вартість пробного'
-    },
-    min: 'мін',
-    max: 'макс',
-    madeIn: 'Зроблено в'
-  },
-  ru: {
-    title: 'Панель метрик',
-    average: 'Среднее',
-    metrics: {
-      leads: 'Тех лиды',
-      leadCost: 'Стоимость лида',
-      cr: 'CR %',
-      actual: 'Бюджет',
-      trialCost: 'Цена пробного'
-    },
-    min: 'мин',
-    max: 'макс',
-    madeIn: 'Сделано в'
-  }
+const metrics = {
+  leads: { name: 'Tech Leads', color: '#2563eb', icon: Users, format: (value) => value },
+  leadCost: { name: 'Lead Cost', color: '#16a34a', icon: DollarSign, format: (value) => `$${value.toFixed(2)}` },
+  cr: { name: 'CR %', color: '#dc2626', icon: Percent, format: (value) => `${value}%` },
+  actual: { name: 'Budget', color: '#9333ea', icon: DollarSign, format: (value) => `$${value.toFixed(2)}` },
+  trialCost: { name: 'Trial Cost', color: '#f59e0b', icon: Target, format: (value) => `$${value.toFixed(2)}` }
 };
 
 const SparkLine = ({ data, dataKey, color, height = 30 }) => (
@@ -74,7 +35,6 @@ export default function MetricsDashboard() {
   const [startIdx, setStartIdx] = useState(0);
   const [endIdx, setEndIdx] = useState(rawData.length - 1);
   const [showAverage, setShowAverage] = useState(true);
-  const [lang, setLang] = useState<Lang>('ru');
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -85,41 +45,7 @@ export default function MetricsDashboard() {
   }, []);
 
   const isMobile = width < 768;
-  const t = translations[lang];
   const filteredData = useMemo(() => rawData.slice(startIdx, endIdx + 1), [startIdx, endIdx]);
-
-  const metrics = {
-    leads: { 
-      name: t.metrics.leads,
-      color: '#2563eb', 
-      icon: Users,
-      format: val => Math.round(val)
-    },
-    leadCost: { 
-      name: t.metrics.leadCost,
-      color: '#1d4ed8', 
-      icon: DollarSign,
-      format: val => `$${val.toFixed(2)}`
-    },
-    cr: { 
-      name: t.metrics.cr,
-      color: '#1e40af', 
-      icon: Percent,
-      format: val => `${val}%`
-    },
-    actual: { 
-      name: t.metrics.actual,
-      color: '#1e3a8a', 
-      icon: DollarSign,
-      format: val => `$${val.toFixed(2)}`
-    },
-    trialCost: { 
-      name: t.metrics.trialCost,
-      color: '#172554', 
-      icon: Target,
-      format: val => `$${val.toFixed(2)}`
-    }
-  };
 
   const getAverageValue = (data, key) => {
     return data.length > 0 ? data.reduce((sum, item) => sum + item[key], 0) / data.length : 0;
@@ -128,19 +54,7 @@ export default function MetricsDashboard() {
   return (
     <div className="w-full space-y-4 bg-gradient-to-br from-blue-50 to-white p-2 sm:p-6 rounded-xl">
       <div className="flex justify-between items-center">
-        <h1 className={`font-bold text-blue-900 ${isMobile ? 'text-lg' : 'text-2xl'}`}>{t.title}</h1>
-        <div className="flex items-center gap-2 bg-blue-50 p-2 rounded-lg">
-          <Globe className="w-4 h-4 text-blue-600" />
-          <select 
-            value={lang}
-            onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setLang(e.target.value as Lang)}
-            className="bg-transparent border-none text-sm focus:outline-none text-blue-600"
-          >
-            <option value="en">EN</option>
-            <option value="uk">UK</option>
-            <option value="ru">RU</option>
-          </select>
-        </div>
+        <h1 className={`font-bold text-blue-900 ${isMobile ? 'text-lg' : 'text-2xl'}`}>Metrics Dashboard</h1>
       </div>
 
       <Card className="bg-white/80 backdrop-blur shadow-lg">
@@ -167,7 +81,7 @@ export default function MetricsDashboard() {
               </select>
             </div>
             <div className="flex items-center gap-2">
-              <label className="text-sm text-gray-600">{t.average}:</label>
+              <label className="text-sm text-gray-600">Average:</label>
               <input
                 type="checkbox"
                 checked={showAverage}
@@ -267,7 +181,7 @@ export default function MetricsDashboard() {
       </div>
 
       <div className="text-center text-sm text-gray-500">
-        {t.madeIn} <span className="font-semibold text-blue-600">OZDO AI</span>
+        Made in <span className="font-semibold text-blue-600">OZDO AI</span>
       </div>
     </div>
   );
