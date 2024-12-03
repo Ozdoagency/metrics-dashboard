@@ -55,6 +55,8 @@ const translations = {
   }
 };
 
+type Lang = 'en' | 'uk' | 'ru';
+
 interface SparkLineProps {
   data: any[];
   dataKey: string;
@@ -112,7 +114,7 @@ export default function MetricsDashboard() {
   const [activeMetric, setActiveMetric] = useState('leads');
   const [startIdx, setStartIdx] = useState(0);
   const [endIdx, setEndIdx] = useState(rawData.length - 1);
-  const [lang, setLang] = useState('ru');
+  const [lang, setLang] = useState<Lang>('ru');
   const [showAverage, setShowAverage] = useState(false);
 
   const t = translations[lang];
@@ -162,11 +164,9 @@ export default function MetricsDashboard() {
           <Globe className="w-4 h-4 text-blue-600" />
           <select 
             value={lang}
-            onChange={(e) => setLang(e.target.value)}
+            onChange={(e) => setLang(e.target.value as Lang)}
             className="bg-transparent border-none text-sm focus:outline-none text-blue-600"
           >
-            <option value="en">EN</option>
-            <option value="uk">UK</option>
             <option value="ru">RU</option>
           </select>
         </div>
