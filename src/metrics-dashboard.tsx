@@ -1,7 +1,9 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, ReferenceLine } from 'recharts';
 import { ArrowUpRight, ArrowDownRight, DollarSign, Users, Percent, Target, Globe } from 'lucide-react';
+import { Card, CardHeader, CardContent } from './components/ui/card'; // Убедитесь, что путь правильный
+
+type Lang = 'en' | 'uk' | 'ru';
 
 const rawData = [
   { date: '07.10', actual: 4240.85, leads: 12, leadCost: 353.40, cr: 100, trialCost: 353.40 },
@@ -72,7 +74,7 @@ export default function MetricsDashboard() {
   const [startIdx, setStartIdx] = useState(0);
   const [endIdx, setEndIdx] = useState(rawData.length - 1);
   const [showAverage, setShowAverage] = useState(true);
-  const [lang, setLang] = useState('ru');
+  const [lang, setLang] = useState<Lang>('ru');
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -131,7 +133,7 @@ export default function MetricsDashboard() {
           <Globe className="w-4 h-4 text-blue-600" />
           <select 
             value={lang}
-            onChange={(e) => setLang(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setLang(e.target.value as Lang)}
             className="bg-transparent border-none text-sm focus:outline-none text-blue-600"
           >
             <option value="en">EN</option>
