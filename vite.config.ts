@@ -13,8 +13,8 @@ export default defineConfig({
       output: {
         manualChunks: {
           // Выделяем React в отдельный чанк
-          'vendor-react': ['react', 'react-dom'],
-          // Другие крупные зависимости можно группировать здесь
+          'vendor': ['react', 'react-dom'],
+          'recharts': ['recharts']
         }
       }
     }
@@ -25,6 +25,8 @@ export default defineConfig({
     },
   },
   define: {
-    'process.env': process.env
+    'process.env.VITE_GOOGLE_PRIVATE_KEY': JSON.stringify(process.env.VITE_GOOGLE_PRIVATE_KEY),
+    'process.env.VITE_GOOGLE_SERVICE_ACCOUNT_EMAIL': JSON.stringify(process.env.VITE_GOOGLE_SERVICE_ACCOUNT_EMAIL),
+    'process.env.VITE_GOOGLE_SPREADSHEET_ID': JSON.stringify(process.env.VITE_GOOGLE_SPREADSHEET_ID)
   }
 })

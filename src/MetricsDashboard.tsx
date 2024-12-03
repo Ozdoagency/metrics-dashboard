@@ -1,4 +1,3 @@
-
 import { useState, useMemo, useEffect } from 'react';
 import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, ReferenceLine } from 'recharts';
 import { ArrowUpRight, ArrowDownRight, DollarSign, Globe, UserCheck, Calculator, BarChart, Wallet, UserCog, LucideIcon } from 'lucide-react';
@@ -62,8 +61,8 @@ const translations = {
         leadCost: 'Lead Cost',
         cr: 'CR %',
         actual: 'Budget',
-        qualified: 'Qualified Amount',
-        qualCost: 'Qualified Cost'
+        quals: 'quals Amount',
+        qualCost: 'quals Cost'
       },
       min: 'min',
       max: 'max',
@@ -77,7 +76,7 @@ const translations = {
         leadCost: 'Вартість ліда',
         cr: 'CR %',
         actual: 'Бюджет',
-        qualified: 'Кількість квалів',
+        quals: 'Кількість квалів',
         qualCost: 'Ціна квала'
       },
       min: 'мін',
@@ -92,7 +91,7 @@ const translations = {
         leadCost: 'Стоимость лида',
         cr: 'CR %',
         actual: 'Бюджет',
-        qualified: 'Количество квалов',
+        quals: 'Количество квалов',
         qualCost: 'Цена квала'
       },
       min: 'мин',
@@ -142,7 +141,7 @@ const MetricsDashboard: React.FC = () => {
 
         const formattedData = sheetData.map((item: SheetItem) => ({
           ...item,
-          qualified: item.quals
+          quals: item.quals
         }));
 
         setData(formattedData);
@@ -211,8 +210,8 @@ const MetricsDashboard: React.FC = () => {
       icon: Wallet,         
       format: (val: MetricValue) => `₴${val.toFixed(2)}`
     },
-    quals: {            // изменено с qualified на quals
-      name: t.metrics.qualified,
+    quals: {            // изменено с quals на quals
+      name: t.metrics.quals,
       color: '#172554',
       icon: UserCheck,      
       format: (val: MetricValue) => Math.round(val)
@@ -251,7 +250,7 @@ const MetricsDashboard: React.FC = () => {
             value={lang}
             onChange={handleLangChange}
             className="bg-transparent border-none text-sm focus:outline-none text-blue-600"
-          ></select>
+          >
             <option value="en">EN</option>
             <option value="uk">UK</option>
             <option value="ru">RU</option>
@@ -305,14 +304,14 @@ const MetricsDashboard: React.FC = () => {
                     ${isMobile ? 'flex-1 min-w-[45%] justify-center' : ''}
                     ${activeMetric === key ? 'bg-blue-600 text-white' : 'text-blue-600 hover:bg-blue-100'}
                   `}
-                ></button>
+                >
                   <Icon className={isMobile ? 'w-4 h-4' : 'w-5 h-5'} />
                   <span className={isMobile ? 'text-xs' : 'text-sm'}>{name}</span>
                 </button>
               ))}
             </div>
             
-            <div className={isMobile ? 'h-64' : 'h-96'}></div>
+            <div className={isMobile ? 'h-64' : 'h-96'}>
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={filteredData}>
                   <XAxis dataKey="date" stroke="#1e40af" fontSize={isMobile ? 10 : 12} />
@@ -341,7 +340,7 @@ const MetricsDashboard: React.FC = () => {
         </div>
       </div>
 
-      <div className={`grid ${isMobile ? 'grid-cols-2' : 'grid-cols-6'} gap-4`}></div>
+      <div className={`grid ${isMobile ? 'grid-cols-2' : 'grid-cols-6'} gap-4`}>
         {Object.entries(metrics).map(([key, { name, color, icon: Icon, format }]) => {
           const keyAsMetric = key as MetricKey;
           const latestValue = filteredData[filteredData.length - 1]?.[keyAsMetric] ?? 0;
@@ -350,7 +349,7 @@ const MetricsDashboard: React.FC = () => {
           const isPositive = Number(change) > 0;
           
           return (
-            <div key={key} className="bg-white/80 backdrop-blur hover:scale-105 transition-transform rounded-lg"></div>
+            <div key={key} className="bg-white/80 backdrop-blur hover:scale-105 transition-transform rounded-lg">
               <div className={isMobile ? 'p-3' : 'p-6'}>
                 <div className="flex items-center justify-between">
                   <div className="p-2 rounded-lg" style={{ backgroundColor: `${color}15` }}>
@@ -383,7 +382,7 @@ const MetricsDashboard: React.FC = () => {
         })}
       </div>
 
-      <div className="text-center text-sm text-gray-500"></div>
+      <div className="text-center text-sm text-gray-500">
         {t.madeIn} <span className="font-semibold text-blue-600">OZDO AI</span>
       </div>
     </div>
