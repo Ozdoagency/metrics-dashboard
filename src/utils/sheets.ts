@@ -31,7 +31,7 @@ export async function fetchSheetData() {
     
     const response = await sheets.spreadsheets.values.get({
       spreadsheetId: spreadsheetId,
-      range: 'Sheet1!A:G', // Adjust range as needed
+      range: 'API_Data!A2:G', // Updated range to match new sheet
     });
 
     console.log('Data received, rows count:', response.data.values?.length);
@@ -41,15 +41,15 @@ export async function fetchSheetData() {
       throw new Error('No data found.');
     }
 
-    // Skip header row and parse data
-    return rows.slice(1).map(row => ({
+    // Parse data with proper formatting
+    return rows.map(row => ({
       date: row[0],
-      leads: Number(row[1]),
-      leadCost: Number(row[2]),
-      cr: Number(row[3]),
-      actual: Number(row[4]),
-      quals: Number(row[5]),
-      qualCost: Number(row[6])
+      actual: parseFloat(row[1].replace('грн.', '').replace(',', '.').trim()),
+      leads: parseInt(row[2]),
+      leadCost: parseInt(row[3]),
+      cr: parseInt(row[4].replace('%', '')),
+      quals: parseInt(row[5]),
+      qualCost: parseFloat(row[6].replace('грн.', '').replace(',', '.').trim())
     }));
 
   } catch (error) {
