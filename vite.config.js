@@ -34,7 +34,8 @@ export default defineConfig({
     commonjsOptions: {
       include: [/node_modules/],
       transformMixedEsModules: true
-    }
+    },
+    outDir: 'dist' // Убедитесь, что выходная директория установлена в 'dist'
   },
   resolve: {
     alias: {

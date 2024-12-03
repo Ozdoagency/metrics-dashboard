@@ -1,4 +1,3 @@
-
 import { google } from 'googleapis';
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 
@@ -15,14 +14,14 @@ async function getAuthClient() {
   return auth;
 }
 
-export default async function handler(req: VercelRequest, res: VercelResponse) {
+export default async function handler(_req: VercelRequest, res: VercelResponse) {
   try {
     const auth = await getAuthClient();
     const sheets = google.sheets({ version: 'v4', auth });
     
     const response = await sheets.spreadsheets.values.get({
       spreadsheetId: process.env.GOOGLE_SPREADSHEET_ID,
-      range: 'A2:G', // Предполагаем, что данные начинаются со второй строки
+      range: 'A2:G', // Предполагаем, что данные начинаются со вто��ой строки
     });
 
     const rows = response.data.values || [];
