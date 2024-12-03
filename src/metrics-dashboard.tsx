@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from './components/ui/card';
 import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, ReferenceLine } from 'recharts';
 import { ArrowUpRight, ArrowDownRight, DollarSign, Users, Percent, Target, Globe } from 'lucide-react';
 
@@ -71,16 +71,14 @@ const CustomTooltip = ({ active, payload, label, metrics }) => {
   const value = data.value;
   
   return (
-    <>
-      <div className="bg-white p-3 rounded-lg shadow-lg border border-gray-100">
-        <div className="font-medium text-gray-600">{label}</div>
-        <div className="flex items-center gap-2 mt-1">
-          <div className="font-bold" style={{ color: metricInfo.color }}>
-            {metricInfo.format(value)}
-          </div>
+    <div className="bg-white p-3 rounded-lg shadow-lg border border-gray-100">
+      <div className="font-medium text-gray-600">{label}</div>
+      <div className="flex items-center gap-2 mt-1">
+        <div className="font-bold" style={{ color: metricInfo.color }}>
+          {metricInfo.format(value)}
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
