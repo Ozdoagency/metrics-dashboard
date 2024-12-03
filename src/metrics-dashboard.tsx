@@ -114,7 +114,7 @@ export default function MetricsDashboard() {
   const [activeMetric, setActiveMetric] = useState('leads');
   const [startIdx, setStartIdx] = useState(0);
   const [endIdx, setEndIdx] = useState(rawData.length - 1);
-  const [lang, setLang] = useState<Lang>('ru');
+  const [lang, setLang] = useState<Lang>('en');
   const [showAverage, setShowAverage] = useState(false);
 
   const t = translations[lang];
