@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "cross-env NODE_OPTIONS=\"--max-old-space-size=4096\" vite",
     "build": "cross-env NODE_OPTIONS=\"--max-old-space-size=4096\" tsc && vite build",
-    "preview": "vite build && node server.js",
+    "preview": "cross-env NODE_OPTIONS=\"--max-old-space-size=4096\" vite build && node server.js",
     "type-check": "tsc --noEmit",
     "lint": "eslint src --ext ts,tsx",
     "format": "prettier --write \"src/**/*.{ts,tsx}\"",
