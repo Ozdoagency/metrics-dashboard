@@ -2,7 +2,11 @@ import React from 'react';
 import MetricsDashboard from './metrics-dashboard';
 
 function App() {
-  return <MetricsDashboard />;
+  return (
+    <div>
+      <MetricsDashboard />
+    </div>
+  );
 }
 
 export default App;
