@@ -1,11 +1,12 @@
-
 services:
   - type: web
     name: metrics-dashboard
     env: node
     plan: free
-    buildCommand: npm install
-    startCommand: npm start
+    buildCommand: cross-env NODE_OPTIONS="--max-old-space-size=4096" npm install
+    startCommand: npm run preview
     envVars:
       - key: NODE_ENV
         value: production
+      - key: NODE_OPTIONS
+        value: --max-old-space-size=4096
