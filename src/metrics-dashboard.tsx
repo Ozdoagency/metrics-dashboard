@@ -36,6 +36,14 @@ const SparkLine = ({ data, dataKey, color, height = 30 }: SparkLineProps) => (
   </ResponsiveContainer>
 );
 
+interface DataItem {
+  [key: string]: number;
+}
+
+const getAverageValue = (data: DataItem[], key: string): number => {
+  return data.length > 0 ? data.reduce((sum, item) => sum + item[key], 0) / data.length : 0;
+};
+
 export default function MetricsDashboard() {
   const [width, setWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1024);
   const [activeMetric, setActiveMetric] = useState('leads');
@@ -53,10 +61,6 @@ export default function MetricsDashboard() {
 
   const isMobile = width < 768;
   const filteredData = useMemo(() => rawData.slice(startIdx, endIdx + 1), [startIdx, endIdx]);
-
-  const getAverageValue = (data, key) => {
-    return data.length > 0 ? data.reduce((sum, item) => sum + item[key], 0) / data.length : 0;
-  };
 
   return (
     <div className="w-full space-y-4 bg-gradient-to-br from-blue-50 to-white p-2 sm:p-6 rounded-xl">
