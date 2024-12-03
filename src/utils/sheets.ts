@@ -2,11 +2,21 @@ import { google } from 'googleapis';
 
 export async function fetchSheetData() {
   try {
-    const privateKey = import.meta.env.VITE_GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n');
+    console.log('Starting fetchSheetData');
+    const privateKey = import.meta.env.VITE_GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n');
+    const clientEmail = import.meta.env.VITE_GOOGLE_SERVICE_ACCOUNT_EMAIL;
+    const spreadsheetId = import.meta.env.VITE_GOOGLE_SPREADSHEET_ID;
+
+    if (!privateKey || !clientEmail || !spreadsheetId) {
+      throw new Error('Missing required environment variables');
+    }
+
+    console.log('Environment variables loaded');
+    
     const auth = new google.auth.GoogleAuth({
       credentials: {
         private_key: privateKey,
-        client_email: import.meta.env.VITE_GOOGLE_SERVICE_ACCOUNT_EMAIL,
+        client_email: clientEmail,
       },
       scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
     });
@@ -14,7 +24,7 @@ export async function fetchSheetData() {
     const sheets = google.sheets({ version: 'v4', auth });
     
     const response = await sheets.spreadsheets.values.get({
-      spreadsheetId: import.meta.env.VITE_GOOGLE_SPREADSHEET_ID,
+      spreadsheetId: spreadsheetId,
       range: 'Sheet1!A:G', // Adjust range as needed
     });
 
@@ -35,7 +45,7 @@ export async function fetchSheetData() {
     }));
 
   } catch (error) {
-    console.error('Error fetching sheet data:', error);
+    console.error('Detailed error in fetchSheetData:', error);
     throw error;
   }
 }
