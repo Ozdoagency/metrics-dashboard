@@ -4,12 +4,15 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
+    "dev": "cross-env NODE_OPTIONS=\"--max-old-space-size=4096\" vite",
+    "build": "cross-env NODE_OPTIONS=\"--max-old-space-size=4096\" tsc && vite build",
     "preview": "vite preview",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "lint": "eslint src --ext ts,tsx",
+    "format": "prettier --write \"src/**/*.{ts,tsx}\""
   },
   "dependencies": {
+    "googleapis": "^144.0.0",
     "lucide-react": "^0.294.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -20,8 +23,12 @@
     "@types/react-dom": "^18.2.17",
     "@vitejs/plugin-react": "^4.0.0",
     "autoprefixer": "^10.4.16",
+    "cross-env": "^7.0.3",
+    "eslint": "^8.55.0",
     "postcss": "^8.4.32",
+    "prettier": "^3.1.0",
     "tailwindcss": "^3.3.6",
+    "typescript": "^5.0.2",
     "vite": "^4.3.9"
   }
 }

@@ -1,63 +1,91 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, ReferenceLine } from 'recharts';
-import { ArrowUpRight, ArrowDownRight, DollarSign, Users, Percent, Target, Globe } from 'lucide-react';
+import { ArrowUpRight, ArrowDownRight, DollarSign, Globe, UserCheck, Calculator, BarChart, Wallet, UserCog, LucideIcon } from 'lucide-react';
+import { fetchSheetData } from './utils/sheets';
 
-const rawData = [
-  { date: '07.10', actual: 4240.85, leads: 12, leadCost: 353.40, cr: 100, trialCost: 353.40 },
-  { date: '08.10', actual: 4188.93, leads: 11, leadCost: 380.81, cr: 100, trialCost: 380.81 },
-  { date: '09.10', actual: 4005.29, leads: 8, leadCost: 500.66, cr: 88, trialCost: 572.18 },
-  { date: '10.10', actual: 5731.62, leads: 21, leadCost: 272.93, cr: 86, trialCost: 318.42 },
-  { date: '11.10', actual: 3867.01, leads: 16, leadCost: 241.69, cr: 106, trialCost: 227.47 },
-  { date: '12.10', actual: 3816.92, leads: 22, leadCost: 173.50, cr: 100, trialCost: 173.50 },
-  { date: '13.10', actual: 4313.49, leads: 16, leadCost: 269.59, cr: 100, trialCost: 269.59 }
-];
+interface MetricData {
+  date: string;
+  actual: number;
+  leads: number;
+  leadCost: number;
+  cr: number;
+  quals: number; // это имя должно использоваться везде
+  qualCost: number;
+}
 
-const translations = {
-  en: {
-    title: 'Metrics Dashboard',
-    average: 'Average',
-    metrics: {
-      leads: 'Tech Leads',
-      leadCost: 'Lead Cost',
-      cr: 'CR %',
-      actual: 'Budget',
-      trialCost: 'Trial Cost'
-    },
-    min: 'min',
-    max: 'max',
-    madeIn: 'Made in'
-  },
-  uk: {
-    title: 'Панель метрик',
-    average: 'Середнє',
-    metrics: {
-      leads: 'Тех ліди',
-      leadCost: 'Вартість ліда',
-      cr: 'CR %',
-      actual: 'Бюджет',
-      trialCost: 'Вартість пробного'
-    },
-    min: 'мін',
-    max: 'макс',
-    madeIn: 'Зроблено в'
-  },
-  ru: {
-    title: 'Панель метрик',
-    average: 'Среднее',
-    metrics: {
-      leads: 'Тех лиды',
-      leadCost: 'Стоимость лида',
-      cr: 'CR %',
-      actual: 'Бюджет',
-      trialCost: 'Цена пробного'
-    },
-    min: 'мин',
-    max: 'макс',
-    madeIn: 'Сделано в'
-  }
+type Lang = 'en' | 'uk' | 'ru';
+type MetricKey = keyof Omit<MetricData, 'date'>;
+
+interface SparkLineProps {
+  data: MetricData[];
+  dataKey: keyof MetricData;
+  color: string;
+  height?: number;
+}
+
+type MetricValue = number;
+type MetricFormatter = (val: MetricValue) => string | number;
+
+interface MetricConfig {
+  name: string;
+  color: string;
+  icon: LucideIcon;
+  format: MetricFormatter;
+}
+
+type Metrics = {
+  [K in MetricKey]: MetricConfig;
 };
 
-const SparkLine = ({ data, dataKey, color, height = 30 }) => (
+const translations = {
+    en: {
+      title: 'Metrics Dashboard',
+      average: 'Average',
+      metrics: {
+        leads: 'Tech Leads',
+        leadCost: 'Lead Cost',
+        cr: 'CR %',
+        actual: 'Budget',
+        qualified: 'Qualified Amount',
+        qualCost: 'Qualified Cost'
+      },
+      min: 'min',
+      max: 'max',
+      madeIn: 'Made in'
+    },
+    uk: {
+      title: 'Панель метрик',
+      average: 'Середнє',
+      metrics: {
+        leads: 'Тех ліди',
+        leadCost: 'Вартість ліда',
+        cr: 'CR %',
+        actual: 'Бюджет',
+        qualified: 'Кількість квалів',
+        qualCost: 'Ціна квала'
+      },
+      min: 'мін',
+      max: 'макс',
+      madeIn: 'Зроблено в'
+    },
+    ru: {
+      title: 'Панель метрик',
+      average: 'Среднее',
+      metrics: {
+        leads: 'Тех лиды',
+        leadCost: 'Стоимость лида',
+        cr: 'CR %',
+        actual: 'Бюджет',
+        qualified: 'Количество квалов',
+        qualCost: 'Цена квала'
+      },
+      min: 'мин',
+      max: 'макс',
+      madeIn: 'Сделано в'
+    }
+  };
+
+const SparkLine = ({ data, dataKey, color, height = 30 }: SparkLineProps) => (
   <ResponsiveContainer width="100%" height={height}>
     <LineChart data={data}>
       <Line type="monotone" dataKey={dataKey} stroke={color} strokeWidth={1} dot={false} />
@@ -65,13 +93,16 @@ const SparkLine = ({ data, dataKey, color, height = 30 }) => (
   </ResponsiveContainer>
 );
 
-export default function MetricsDashboard() {
+const MetricsDashboard: React.FC = () => {
   const [width, setWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1024);
-  const [activeMetric, setActiveMetric] = useState('leads');
+  const [activeMetric, setActiveMetric] = useState<MetricKey>('leads');
   const [startIdx, setStartIdx] = useState(0);
-  const [endIdx, setEndIdx] = useState(rawData.length - 1);
+  const [endIdx, setEndIdx] = useState(0);
   const [showAverage, setShowAverage] = useState(true);
-  const [lang, setLang] = useState('ru');
+  const [lang, setLang] = useState<Lang>('ru');
+  const [data, setData] = useState<MetricData[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -81,56 +112,99 @@ export default function MetricsDashboard() {
     }
   }, []);
 
+  useEffect(() => {
+    async function loadData() {
+      try {
+        setLoading(true);
+        const sheetData = await fetchSheetData();
+        // Преобразуем данные в правильный формат
+        const formattedData = sheetData.map(item => ({
+          ...item,
+          qualified: item.quals // если нужно сохранить qualified в интерфейсе
+        }));
+        setData(formattedData);
+        setEndIdx(sheetData.length - 1);
+        setError(null);
+      } catch (err) {
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError('An unknown error occurred');
+        }
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadData();
+  }, []);
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
+
   const isMobile = width < 768;
   const t = translations[lang];
-  const filteredData = useMemo(() => rawData.slice(startIdx, endIdx + 1), [startIdx, endIdx]);
+  const filteredData = useMemo(() => data.slice(startIdx, endIdx + 1), [startIdx, endIdx, data]);
 
-  const metrics = {
+  const metrics: Metrics = {
     leads: { 
       name: t.metrics.leads,
-      color: '#2563eb', 
-      icon: Users,
-      format: val => Math.round(val)
+      color: '#2563eb',
+      icon: UserCog,
+      format: (val: MetricValue) => Math.round(val)
     },
     leadCost: { 
       name: t.metrics.leadCost,
       color: '#1d4ed8', 
-      icon: DollarSign,
-      format: val => `₴${val.toFixed(2)}`
+      icon: Calculator,     
+      format: (val: MetricValue) => `₴${val.toFixed(2)}`
     },
     cr: { 
       name: t.metrics.cr,
       color: '#1e40af', 
-      icon: Percent,
-      format: val => `${val}%`
+      icon: BarChart,       
+      format: (val: MetricValue) => `${val}%`
     },
     actual: { 
       name: t.metrics.actual,
       color: '#1e3a8a', 
-      icon: DollarSign,
-      format: val => `₴${val.toFixed(2)}`
+      icon: Wallet,         
+      format: (val: MetricValue) => `₴${val.toFixed(2)}`
     },
-    trialCost: { 
-      name: t.metrics.trialCost,
-      color: '#172554', 
-      icon: Target,
-      format: val => `₴${val.toFixed(2)}`
+    quals: {            // изменено с qualified на quals
+      name: t.metrics.qualified,
+      color: '#172554',
+      icon: UserCheck,      
+      format: (val: MetricValue) => Math.round(val)
+    },
+    qualCost: {           
+      name: t.metrics.qualCost,
+      color: '#0f172a', 
+      icon: DollarSign,
+      format: (val: MetricValue) => `₴${val.toFixed(2)}`
     }
-  };
+};
 
-  const getAverageValue = (data, key) => {
+  const getAverageValue = (data: MetricData[], key: MetricKey): number => {
     return data.length > 0 ? data.reduce((sum, item) => sum + item[key], 0) / data.length : 0;
   };
 
+  const handleLangChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setLang(e.target.value as Lang);
+  };
+
+  const handleMetricChange = (key: MetricKey) => {
+    setActiveMetric(key);
+  };
+
   return (
-    <div className="w-full space-y-4 bg-gradient-to-br from-blue-50 to-white p-2 sm:p-6 rounded-xl">
+    <div className="w-full space-y-4 bg-blue-500 p-2 sm:p-6 rounded-xl">
       <div className="flex justify-between items-center">
         <h1 className={`font-bold text-blue-900 ${isMobile ? 'text-lg' : 'text-2xl'}`}>{t.title}</h1>
         <div className="flex items-center gap-2 bg-blue-50 p-2 rounded-lg">
           <Globe className="w-4 h-4 text-blue-600" />
           <select 
             value={lang}
-            onChange={(e) => setLang(e.target.value)}
+            onChange={handleLangChange}
             className="bg-transparent border-none text-sm focus:outline-none text-blue-600"
           >
             <option value="en">EN</option>
@@ -149,8 +223,8 @@ export default function MetricsDashboard() {
                 value={startIdx}
                 onChange={e => setStartIdx(Number(e.target.value))}
               >
-                {rawData.map((_, idx) => (
-                  <option key={idx} value={idx}>{rawData[idx].date}</option>
+                {data.map((_, idx) => (
+                  <option key={idx} value={idx}>{data[idx].date}</option>
                 ))}
               </select>
               <select 
@@ -158,8 +232,8 @@ export default function MetricsDashboard() {
                 value={endIdx}
                 onChange={e => setEndIdx(Number(e.target.value))}
               >
-                {rawData.map((_, idx) => (
-                  <option key={idx} value={idx}>{rawData[idx].date}</option>
+                {data.map((_, idx) => (
+                  <option key={idx} value={idx}>{data[idx].date}</option>
                 ))}
               </select>
             </div>
@@ -180,7 +254,7 @@ export default function MetricsDashboard() {
               {Object.entries(metrics).map(([key, { name, icon: Icon }]) => (
                 <button
                   key={key}
-                  onClick={() => setActiveMetric(key)}
+                  onClick={() => handleMetricChange(key as MetricKey)}
                   className={`
                     flex items-center gap-2 px-3 py-2 rounded-md
                     ${isMobile ? 'flex-1 min-w-[45%] justify-center' : ''}
@@ -222,12 +296,12 @@ export default function MetricsDashboard() {
         </div>
       </div>
 
-      <div className={`grid ${isMobile ? 'grid-cols-2' : 'grid-cols-5'} gap-4`}>
+      <div className={`grid ${isMobile ? 'grid-cols-2' : 'grid-cols-6'} gap-4`}>
         {Object.entries(metrics).map(([key, { name, color, icon: Icon, format }]) => {
-          const latestValue = filteredData[filteredData.length - 1]?.[key] ?? 0;
-          const previousValue = filteredData[filteredData.length - 2]?.[key] ?? latestValue;
-          const change = latestValue && previousValue ? ((latestValue - previousValue) / previousValue * 100).toFixed(1) : 0;
-          const isPositive = change > 0;
+          const latestValue = filteredData[filteredData.length - 1]?.[key as MetricKey] ?? 0;
+          const previousValue = filteredData[filteredData.length - 2]?.[key as MetricKey] ?? latestValue;
+          const change = Number(((latestValue - previousValue) / previousValue * 100).toFixed(1));
+          const isPositive = Number(change) > 0;
           
           return (
             <div key={key} className="bg-white/80 backdrop-blur hover:scale-105 transition-transform rounded-lg">
@@ -252,7 +326,7 @@ export default function MetricsDashboard() {
                   <div className="h-8 mt-2">
                     <SparkLine 
                       data={filteredData.slice(-7)} 
-                      dataKey={key} 
+                      dataKey={key as MetricKey} 
                       color={color} 
                     />
                   </div>
@@ -268,4 +342,6 @@ export default function MetricsDashboard() {
       </div>
     </div>
   );
-}
+};
+
+export default MetricsDashboard;
