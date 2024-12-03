@@ -96,7 +96,7 @@ export default function MetricsDashboard() {
       name: t.metrics.leadCost,
       color: '#1d4ed8', 
       icon: DollarSign,
-      format: val => `$${val.toFixed(2)}`
+      format: val => `₴${val.toFixed(2)}`
     },
     cr: { 
       name: t.metrics.cr,
@@ -108,13 +108,13 @@ export default function MetricsDashboard() {
       name: t.metrics.actual,
       color: '#1e3a8a', 
       icon: DollarSign,
-      format: val => `$${val.toFixed(2)}`
+      format: val => `₴${val.toFixed(2)}`
     },
     trialCost: { 
       name: t.metrics.trialCost,
       color: '#172554', 
       icon: Target,
-      format: val => `$${val.toFixed(2)}`
+      format: val => `₴${val.toFixed(2)}`
     }
   };
 
