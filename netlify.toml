@@ -1,8 +1,11 @@
+# Конфигурация сборки
 [build]
   command = "npm run build"
-  publish = "dist"  // Соответствует директории сборки Vite
+  # Директория, соответствующая outDir в vite.config.ts
+  publish = "dist"
   base = "."
 
+# Настройка маршрутизации для SPA
 [[redirects]]
   from = "/*"
   to = "/index.html"
