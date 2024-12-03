@@ -18,7 +18,9 @@
     "recharts": "^2.1.9"
   },
   "devDependencies": {
-    "react-app-rewired": "^2.2.1"
+    "react-app-rewired": "^2.2.1",
+    "@types/react": "^17.0.2",
+    "@types/react-dom": "^17.0.2"
   },
   "browserslist": {
     "production": [
