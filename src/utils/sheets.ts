@@ -2,7 +2,12 @@ import { google } from 'googleapis';
 
 export async function fetchSheetData() {
   try {
-    console.log('Starting fetchSheetData');
+    console.log('Env variables:', {
+      hasPrivateKey: !!import.meta.env.VITE_GOOGLE_PRIVATE_KEY,
+      hasEmail: !!import.meta.env.VITE_GOOGLE_SERVICE_ACCOUNT_EMAIL,
+      hasSpreadsheetId: !!import.meta.env.VITE_GOOGLE_SPREADSHEET_ID
+    });
+
     const privateKey = import.meta.env.VITE_GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n');
     const clientEmail = import.meta.env.VITE_GOOGLE_SERVICE_ACCOUNT_EMAIL;
     const spreadsheetId = import.meta.env.VITE_GOOGLE_SPREADSHEET_ID;
@@ -21,12 +26,15 @@ export async function fetchSheetData() {
       scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
     });
 
+    console.log('Auth created, fetching data...');
     const sheets = google.sheets({ version: 'v4', auth });
     
     const response = await sheets.spreadsheets.values.get({
       spreadsheetId: spreadsheetId,
       range: 'Sheet1!A:G', // Adjust range as needed
     });
+
+    console.log('Data received, rows count:', response.data.values?.length);
 
     const rows = response.data.values;
     if (!rows || rows.length === 0) {
@@ -45,7 +53,10 @@ export async function fetchSheetData() {
     }));
 
   } catch (error) {
-    console.error('Detailed error in fetchSheetData:', error);
+    console.error('Error details:', {
+      message: error instanceof Error ? error.message : 'Unknown error',
+      error
+    });
     throw error;
   }
 }

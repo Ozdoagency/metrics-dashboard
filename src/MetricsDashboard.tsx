@@ -130,25 +130,20 @@ const MetricsDashboard: React.FC = () => {
   useEffect(() => {
     async function loadData() {
       try {
-        console.log('Starting data load');
+        console.log('Starting data load in MetricsDashboard');
         setLoading(true);
         const sheetData = await fetchSheetData();
-        console.log('Received data:', sheetData);
+        console.log('Data received in MetricsDashboard:', sheetData);
         
         if (!sheetData || sheetData.length === 0) {
           throw new Error('No data received from sheets');
         }
 
-        const formattedData = sheetData.map((item: SheetItem) => ({
-          ...item,
-          quals: item.quals
-        }));
-
-        setData(formattedData);
+        setData(sheetData);
         setEndIdx(sheetData.length - 1);
         setError(null);
       } catch (err) {
-        console.error('Error in loadData:', err);
+        console.error('Error in MetricsDashboard:', err);
         setError(err instanceof Error ? err.message : 'An unknown error occurred');
       } finally {
         setLoading(false);

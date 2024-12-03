@@ -7,9 +7,15 @@
 
 [build.environment]
   NODE_VERSION = "16"
+  VITE_GOOGLE_PRIVATE_KEY = "${VITE_GOOGLE_PRIVATE_KEY}"
+  VITE_GOOGLE_SERVICE_ACCOUNT_EMAIL = "${VITE_GOOGLE_SERVICE_ACCOUNT_EMAIL}"
+  VITE_GOOGLE_SPREADSHEET_ID = "${VITE_GOOGLE_SPREADSHEET_ID}"
 
 # Настройка маршрутизации для SPA
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
+
+[context.production]
+  environment = { NODE_VERSION = "16" }
