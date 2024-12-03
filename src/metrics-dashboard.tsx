@@ -167,6 +167,8 @@ export default function MetricsDashboard() {
             onChange={(e) => setLang(e.target.value as Lang)}
             className="bg-transparent border-none text-sm focus:outline-none text-blue-600"
           >
+            <option value="en">EN</option>
+            <option value="uk">UK</option>
             <option value="ru">RU</option>
           </select>
         </div>
