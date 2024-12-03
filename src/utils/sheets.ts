@@ -11,6 +11,7 @@ const APPS_SCRIPT_URL = import.meta.env.VITE_APPS_SCRIPT_URL;
 
 export async function fetchSheetData() {
   try {
+    console.log('Fetching data from:', APPS_SCRIPT_URL);
     const response = await fetch(APPS_SCRIPT_URL);
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
