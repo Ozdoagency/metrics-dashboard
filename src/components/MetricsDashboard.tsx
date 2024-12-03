@@ -1,4 +1,3 @@
-
 import { useState, useMemo, useEffect } from 'react';
 import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, ReferenceLine } from 'recharts';
 import { ArrowUpRight, ArrowDownRight, DollarSign, Globe, UserCheck, Calculator, BarChart, Wallet, UserCog, LucideIcon } from 'lucide-react';
