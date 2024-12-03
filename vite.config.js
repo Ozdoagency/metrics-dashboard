@@ -8,7 +8,8 @@ export default defineConfig({
     fs: {
       strict: false
     },
-    port: 3000,
+    port: process.env.PORT || 3000,
+    host: '0.0.0.0',
     proxy: {
       '/api': {
         target: process.env.VITE_API_URL || 'http://localhost:3001',
@@ -19,7 +20,7 @@ export default defineConfig({
     }
   },
   build: {
-    chunkSizeWarningLimit: 2000,
+    chunkSizeWarningLimit: 1000, // Уменьшите лимит предупреждения о размере чанка
     rollupOptions: {
       output: {
         manualChunks: {

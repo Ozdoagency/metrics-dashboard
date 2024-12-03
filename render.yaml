@@ -2,7 +2,7 @@ services:
   - type: web
     name: metrics-dashboard
     env: node
-    plan: free
+    plan: starter  # Измените план на платный
     buildCommand: cross-env NODE_OPTIONS="--max-old-space-size=4096" npm install
     startCommand: npm run preview
     envVars:
