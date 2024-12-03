@@ -11,15 +11,30 @@
   },
   "homepage": ".",
   "dependencies": {
+    "lucide-react": "^0.268.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-scripts": "4.0.3",
-    "recharts": "^2.1.9",
-    "lucide-react": "^0.268.0"
+    "recharts": "^2.1.9"
   },
   "devDependencies": {
-    "react-app-rewired": "^2.1.8"
+    "react-app-rewired": "^2.2.1"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "engines": {
+    "node": ">=16.0.0"
+  }
 }
