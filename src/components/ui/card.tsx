@@ -12,7 +12,7 @@ export const Card = ({ children, className }: CardProps) => (
 );
 
 export const CardContent = ({ children, className }: CardProps) => (
-  <div className={`p-4 ${className}`}></div>
+  <div className={`p-4 ${className}`}>
     {children}
   </div>
 );
