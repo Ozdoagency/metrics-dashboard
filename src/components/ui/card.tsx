@@ -1,30 +1,25 @@
-import React, { ReactNode } from 'react';
+import React from 'react';
 
-interface CardProps {
-  children: ReactNode;
-  className?: string;
-}
-
-export const Card = ({ children, className }: CardProps) => (
-  <div className={`p-4 rounded-lg shadow-md ${className}`}>
+export const Card = ({ className, children, ...props }) => (
+  <div className={`rounded-lg ${className}`} {...props}>
     {children}
   </div>
 );
 
-export const CardContent = ({ children, className }: CardProps) => (
-  <div className={`p-4 ${className}`}>
+export const CardHeader = ({ className, children, ...props }) => (
+  <div className={`p-6 ${className}`} {...props}>
     {children}
   </div>
 );
 
-export const CardHeader = ({ children, className }: CardProps) => (
-  <div className={`p-4 border-b ${className}`}>
+export const CardTitle = ({ className, children, ...props }) => (
+  <h3 className={`text-lg font-semibold ${className}`} {...props}>
     {children}
-  </div>
+  </h3>
 );
 
-export const CardTitle = ({ children, className }: CardProps) => (
-  <h2 className={`text-lg font-bold ${className}`}>
+export const CardContent = ({ className, children, ...props }) => (
+  <div className={`p-6 pt-0 ${className}`} {...props}>
     {children}
-  </h2>
+  </div>
 );
