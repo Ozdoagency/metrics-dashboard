@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, ReferenceLine } from 'recharts';
-import { ArrowUpRight, ArrowDownRight, DollarSign, Users, Percent, Target, Globe } from 'lucide-react';
+import { ArrowUpRight, ArrowDownRight, DollarSign, Users, Percent, Target } from 'lucide-react';
 import { Card, CardHeader, CardContent } from './components/ui/card'; // Убедитесь, что путь правильный
 
 const rawData = [
