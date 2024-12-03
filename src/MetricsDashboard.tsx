@@ -13,16 +13,6 @@ interface MetricData {
   qualCost: number; // Добавляем поле qualCost
 }
 
-interface SheetItem {
-  date: string;
-  leads: number;
-  leadCost: number;
-  cr: number;
-  actual: number;
-  quals: number;
-  qualCost: number;
-}
-
 type Lang = 'en' | 'uk' | 'ru';
 type MetricFormatter = (val: MetricValue) => string | number;
 

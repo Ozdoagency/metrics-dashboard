@@ -1,4 +1,4 @@
-import { MetricsDashboard } from './components/MetricsDashboard';
+import MetricsDashboard from './components/MetricsDashboard';
 
 function App() {
   return (
