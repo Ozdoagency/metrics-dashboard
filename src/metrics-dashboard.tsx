@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, ReferenceLine } from 'recharts';
@@ -72,14 +71,16 @@ const CustomTooltip = ({ active, payload, label, metrics }) => {
   const value = data.value;
   
   return (
-    <div className="bg-white p-3 rounded-lg shadow-lg border border-gray-100"></div>
-      <div className="font-medium text-gray-600">{label}</div>
-      <div className="flex items-center gap-2 mt-1">
-        <div className="font-bold" style={{ color: metricInfo.color }}>
-          {metricInfo.format(value)}
+    <>
+      <div className="bg-white p-3 rounded-lg shadow-lg border border-gray-100">
+        <div className="font-medium text-gray-600">{label}</div>
+        <div className="flex items-center gap-2 mt-1">
+          <div className="font-bold" style={{ color: metricInfo.color }}>
+            {metricInfo.format(value)}
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
@@ -151,7 +152,7 @@ export default function MetricsDashboard() {
             value={lang}
             onChange={(e) => setLang(e.target.value)}
             className="bg-transparent border-none text-sm focus:outline-none text-blue-600"
-          ></select>
+          >
             <option value="en">EN</option>
             <option value="uk">UK</option>
             <option value="ru">RU</option>
@@ -159,7 +160,7 @@ export default function MetricsDashboard() {
         </div>
       </div>
 
-      <Card className="bg-white/80 backdrop-blur shadow-lg"></Card>
+      <Card className="bg-white/80 backdrop-blur shadow-lg">
         <CardHeader className="flex flex-col space-y-4 pb-2 border-b">
           <div className="flex justify-between items-center">
             <CardTitle className={`font-bold text-blue-900 ${viewMode === 'desktop' ? 'text-2xl' : 'text-xl'}`}>
@@ -202,7 +203,7 @@ export default function MetricsDashboard() {
                   setEndIdx(newEnd);
                   if (newEnd < startIdx) setStartIdx(newEnd);
                 }}
-              ></select>
+              >
                 {rawData.map((item, idx) => (
                   <option key={idx} value={idx}>{item.date}</option>
                 ))}
@@ -266,7 +267,7 @@ export default function MetricsDashboard() {
         </CardContent>
       </Card>
 
-      <div className={`grid ${styles.metricsGrid} gap-4`}></div>
+      <div className={`grid ${styles.metricsGrid} gap-4`}>
         {Object.entries(metrics).map(([key, { name, color, icon: Icon, format }]) => {
           const latestValue = filteredData[filteredData.length - 1][key];
           const previousValue = filteredData[filteredData.length - 2]?.[key] ?? latestValue;
@@ -275,7 +276,7 @@ export default function MetricsDashboard() {
           const { min, max } = getMinMaxValues(filteredData, key);
           
           return (
-            <Card key={key} className="bg-white/80 backdrop-blur transition-transform hover:scale-105"></Card>
+            <Card key={key} className="bg-white/80 backdrop-blur transition-transform hover:scale-105">
               <CardContent className="pt-6">
                 <div className="flex items-center justify-between">
                   <div className="p-2 rounded-lg" style={{ backgroundColor: `${color}15` }}>
