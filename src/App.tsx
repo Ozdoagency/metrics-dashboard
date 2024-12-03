@@ -1,12 +1,8 @@
 import React from 'react';
-import MetricsDashboard from './metrics-dashboard'; // Убедитесь, что файл metrics-dashboard.tsx существует в папке src
+import MetricsDashboard from './metrics-dashboard';
 
 function App() {
-  return (
-    <div className="App">
-      <MetricsDashboard />
-    </div>
-  );
+  return <MetricsDashboard />;
 }
 
 export default App;
